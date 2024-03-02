@@ -1,2 +1,4 @@
 # CrewsOutThere
-mirror of senior project 2022-2023. Forked before Twilio to Flowroute transfer. Non-functioning but can still see the general architecture and design. As well as the documentation, which is located in the wiki.
+Welcome to CrewsOutThere! This codebase is an instance of my Computer Science major senior project at Western Washington University that ran from January 2023 - December 2023.
+
+CoT is a fully functioning text-messaging system created for the Bellingham Civil Air Patrol, an auxilary of the US Airforce, intended to get flight crews in contact with each other on short notice.
