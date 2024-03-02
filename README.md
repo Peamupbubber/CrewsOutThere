@@ -5,6 +5,8 @@ CoT is a fully functioning text-messaging system created for the Bellingham Civi
 
 Functionality includes: inviting other users to the system (intended only for use within CAP), adding yourself to roles and airports, viewing roles and airports (both yours and all available options), requesting members of a flight crews (by specifying the role and airport the user needs), and help message features.
 
+Documents created for this project: Vision & Scope, Software Requirements Specification, Schedule, ER Diagrams, Use Case Diagrams, Test Cases, Project Documentation, and Design Specs for future implementations
+
 Technologies used for this project: Golang, MySQL, Docker, Bash, Linux, NetBSD
 
 There are 4 distinct folders in this repo, each one serves a specific purpose:
