@@ -48,12 +48,6 @@ func handleContacted(input string, contactedPhone string) string {
 func handleOutgoingContacts(contactedPhone string, timestamp int64) {
 	// First, get all of the people who have been contacted by the original requester as well as the person who
 	// accepted the request (in order to send them their next deferred message)
-	// stmt, err := db.DB.Prepare("SELECT * FROM Contacts WHERE contacted_phone = ? OR timestamp = ?")
-	// if err != nil {
-	// 	log.Fatalf("Error creating prepared statement: %s", err)
-	// }
-	// defer stmt.Close()
-
 	query := "SELECT * FROM Contacts WHERE contacted_phone = ? OR timestamp = ?"
 	toBeContacted, err := db.DB.Query(query, contactedPhone, timestamp)
 
@@ -152,13 +146,6 @@ func handleFlyRequest(requestPhone string, requestMessage string, role string, a
 	// Build a properly formatted request message
 	requestMessageFull := buildRequestMessage(requestPhone, requestMessage)
 
-	// Add every phone number with matching role and name with number in contacts to be placed in deferred
-	// stmt, err := db.DB.Prepare("SELECT phone_number FROM Flies NATURAL JOIN Wants NATURAL JOIN Members WHERE role_name = ? AND iata_code = ? AND phone_number != ? AND notify = 1 AND phone_number IN (SELECT phone_number FROM Contacts)")
-	// if err != nil {
-	// 	log.Fatalf("Error creating prepared statement: %s", err)
-	// }
-	// defer stmt.Close()
-
 	query := "SELECT phone_number FROM Flies NATURAL JOIN Wants NATURAL JOIN Members WHERE role_name = ? AND iata_code = ? AND phone_number != ? AND notify = 1 AND phone_number IN (SELECT contacted_phone FROM Contacts)"
 	matchingContacted, err := db.DB.Query(query, role, airport, requestPhone)
 	if err != nil {
@@ -194,12 +181,6 @@ func handleFlyRequest(requestPhone string, requestMessage string, role string, a
 		addItemToRequester(requestPhone, requestMessageFull, timestamp)
 	}
 	// Message every phone number with matching role and name with number not in contacts
-	// stmt, err = db.DB.Prepare("SELECT phone_number FROM Flies NATURAL JOIN Wants NATURAL JOIN Members WHERE role_name = ? AND iata_code = ? AND phone_number != ? AND notify = 1 AND phone_number NOT IN (SELECT phone_number FROM Contacts)")
-	// if err != nil {
-	// 	log.Fatalf("Error creating prepared statement: %s", err)
-	// }
-	// defer stmt.Close()
-
 	query = "SELECT phone_number FROM Flies NATURAL JOIN Wants NATURAL JOIN Members WHERE role_name = ? AND iata_code = ? AND phone_number != ? AND notify = 1 AND phone_number NOT IN (SELECT contacted_phone FROM Contacts)"
 	matchingCrew, err := db.DB.Query(query, role, airport, requestPhone)
 	if err != nil {
@@ -248,11 +229,6 @@ func handleFlyRequest(requestPhone string, requestMessage string, role string, a
 // Takes an input message from a user and formats it to be sent out as the request message to other users
 func buildRequestMessage(requestPhone string, message string) string {
 	var requesterName string
-	// stmt, err := db.DB.Prepare("SELECT Name from Members Where phone_number = ?")
-	// if err != nil {
-	// 	log.Fatalf("Error creating prepared statement: %s", err)
-	// }
-	// defer stmt.Close()
 	query := "SELECT Name from Members Where phone_number = ?"
 	err := db.DB.QueryRow(query, requestPhone).Scan(&requesterName)
 	if err != nil {
@@ -276,12 +252,6 @@ func buildReponseMessage(contactedPhone string) string {
 
 // Adds the given information as a new entry in the Contacts table
 func addItemToContacts(requesterPhone string, contactedPhone string, timestamp int64) {
-	// stmt, err := db.DB.Prepare("INSERT INTO Contacts (requester_phone, contacted_phone, timestamp) VALUES (?, ?, ?)")
-	// if err != nil {
-	// 	log.Fatalf("Error creating prepared statement: %s", err)
-	// }
-	// defer stmt.Close()
-
 	query := "INSERT INTO Contacts (requester_phone, contacted_phone, timestamp) VALUES (?, ?, ?)"
 	_, err := db.DB.Exec(query, requesterPhone, contactedPhone, timestamp)
 	if err != nil {
@@ -291,12 +261,6 @@ func addItemToContacts(requesterPhone string, contactedPhone string, timestamp i
 
 // Adds the given information as a new entry in the requester table
 func addItemToRequester(requesterPhone string, request_message string, timestamp int64) {
-	// stmt, err := db.DB.Prepare("INSERT INTO Requester (phone_number, request_message, timestamp) VALUES (?, ?, ?)")
-	// if err != nil {
-	// 	log.Fatalf("Error creating prepared statement: %s", err)
-	// }
-	// defer stmt.Close()
-
 	query := "INSERT INTO Requester (phone_number, request_message, timestamp) VALUES (?, ?, ?)"
 	_, err := db.DB.Exec(query, requesterPhone, request_message, timestamp)
 	if err != nil {
@@ -306,12 +270,6 @@ func addItemToRequester(requesterPhone string, request_message string, timestamp
 
 // Adds the given information as a new entry in the deferred table
 func addItemToDeferred(requesterPhone string, contactedPhone string, requestMessage string, timestamp int64) {
-	// stmt, err := db.DB.Prepare("INSERT INTO Deferred (requester_phone, contacted_phone, request_message, timestamp) VALUES (?, ?, ?, ?)")
-	// if err != nil {
-	// 	log.Fatalf("Error creating prepared statement: %s", err)
-	// }
-	// defer stmt.Close()
-
 	query := "INSERT INTO Deferred (requester_phone, contacted_phone, request_message, timestamp) VALUES (?, ?, ?, ?)"
 	_, err := db.DB.Exec(query, requesterPhone, contactedPhone, requestMessage, timestamp)
 	if err != nil {
@@ -321,12 +279,6 @@ func addItemToDeferred(requesterPhone string, contactedPhone string, requestMess
 
 // Removes a request entry from the Contacts table at the given timestamp
 func removeRequestFromContactsAtContactedPhone(contactedPhone string) {
-	// stmt, err := db.DB.Prepare("DELETE FROM Contacts WHERE contacted_phone = ?")
-	// if err != nil {
-	// 	log.Fatalf("Error creating prepared statement: %s", err)
-	// }
-	// defer stmt.Close()
-
 	query := "DELETE FROM Contacts WHERE contacted_phone = ?"
 	_, err := db.DB.Exec(query, contactedPhone)
 	if err != nil {
@@ -336,12 +288,6 @@ func removeRequestFromContactsAtContactedPhone(contactedPhone string) {
 
 // Removes a request entry from the Deferred table at the given timestamp
 func removeRequestFromDeferredAtTimestamp(timestamp int64) {
-	// stmt, err := db.DB.Prepare("DELETE FROM Deferred WHERE timestamp = ?")
-	// if err != nil {
-	// 	log.Fatalf("Error creating prepared statement: %s", err)
-	// }
-	// defer stmt.Close()
-
 	query := "DELETE FROM Deferred WHERE timestamp = ?"
 	_, err := db.DB.Exec(query, timestamp)
 	if err != nil {
@@ -351,12 +297,6 @@ func removeRequestFromDeferredAtTimestamp(timestamp int64) {
 
 // Removes a request entry from the Requester table at the given timestamp
 func removeRequestFromRequesterAtTimestamp(timestamp int64) {
-	// stmt, err := db.DB.Prepare("DELETE FROM Requester WHERE timestamp = ?")
-	// if err != nil {
-	// 	log.Fatalf("Error creating prepared statement: %s", err)
-	// }
-	// defer stmt.Close()
-
 	query := "DELETE FROM Requester WHERE timestamp = ?"
 	_, err := db.DB.Exec(query, timestamp)
 	if err != nil {
@@ -370,11 +310,6 @@ func getItemFromCont(contactedPhone string) (string, string, int64) {
 	var rPhone string
 	var cPhone string
 	var timestamp int64
-	// stmt, err := db.DB.Prepare("SELECT * FROM Contacts WHERE contacted_phone = ?")
-	// if err != nil {
-	// 	log.Fatalf("Error creating prepared statement: %s", err)
-	// }
-	// defer stmt.Close()
 
 	query := "SELECT * FROM Contacts WHERE contacted_phone = ?"
 	err := db.DB.QueryRow(query, contactedPhone).Scan(&rPhone, &cPhone, &timestamp)
@@ -393,11 +328,6 @@ func getTopItemFromDef(contactedPhone string) (string, string, string, int64) {
 	var cPhone string
 	var message string
 	var newRequestTimestamp int64
-	// stmt, err := db.DB.Prepare("SELECT * FROM Deferred WHERE contacted_phone = ? ORDER BY timestamp ASC")
-	// if err != nil {
-	// 	log.Fatalf("Error creating prepared statement: %s", err)
-	// }
-	// defer stmt.Close()
 
 	query := "SELECT * FROM Deferred WHERE contacted_phone = ? ORDER BY timestamp ASC"
 	err := db.DB.QueryRow(query, contactedPhone).Scan(&rPhone, &cPhone, &message, &newRequestTimestamp)

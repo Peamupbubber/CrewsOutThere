@@ -18,35 +18,16 @@ import (
 func main() {
 	http.HandleFunc("/", httpServ.ReceiveText)
 	http.HandleFunc("/status", httpServ.ReceiveTest)
-	// logging.InitLogger()
 	encryption.InitConf()
 	db.DBAdminConnect()
 	command.ParserSetup()
-	// crewTwilio.TwilioConnect()
+
 	go http.ListenAndServe(":3000", nil)
-	// ListenAndServe is a blocking function so if we ever get out of it things have gone horribly wrong
-	// If you want to respond as a specific number, enter command as: [phone_number]:[rest of message]
-	// Otherwise it will default to defaultPhone
-	// for {
-	// 	db.NestedQueryTest()
-	// }
-	// fmt.Println("Exiting on 0")
-	// os.Exit(0)
+
 	phonePrefix := "%2b"
-	// mask := 0
 	for {
-		// db.NestedQueryTest()
 		defaultPhone := "11234567890"
 		var inText string
-		// if mask%3 == 0 {
-		// 	inText = "I need an MO out of kbli"
-		// } else if mask%3 == 1 {
-		// 	inText = "I need an AP out of kbli"
-		// } else {
-		// 	inText = "4564564567:Yes"
-		// }
-		// fmt.Println(mask)
-		// mask++
 		scanner := bufio.NewScanner(os.Stdin)
 
 		fmt.Print("\n\nEnter Text: ")

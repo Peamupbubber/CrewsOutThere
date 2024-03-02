@@ -23,12 +23,6 @@ func validateUser(phone string) Status {
 	var isValid int
 	var timeStampMem int64
 
-	// stmt, err := db.DB.Prepare("SELECT * FROM Members WHERE Phone_Number = ?")
-	// if err != nil {
-	// 	log.Fatalf("Error creating prepared statement: %s", err)
-	// }
-	// defer stmt.Close()
-
 	query := "SELECT * FROM Members WHERE Phone_Number = ?"
 	err := db.DB.QueryRow(query, phone).Scan(&pNumber, &name, &added_by, &notify, &isValid, &timeStampMem)
 	if err != nil {
@@ -49,12 +43,6 @@ func validateUser(phone string) Status {
 	var cNumber string
 	var timeStamp int64
 
-	// stmt, err = db.DB.Prepare("SELECT * FROM Contacts WHERE contacted_phone = ?")
-	// if err != nil {
-	// 	log.Fatalf("Error creating prepared statement: %s", err)
-	// }
-	// defer stmt.Close()
-
 	query = "SELECT * FROM Contacts WHERE contacted_phone = ?"
 	err = db.DB.QueryRow(query, phone).Scan(&rNumber, &cNumber, &timeStamp)
 	if err != nil {
@@ -70,11 +58,6 @@ func validateUser(phone string) Status {
 // Check to see if a given IATA Code is in the Airports table
 func isIATAInAirports(IATA_Code string) bool {
 	var comment sql.NullString
-	// stmt, err := db.DB.Prepare("SELECT * FROM Airports WHERE IATA_Code = ?")
-	// if err != nil {
-	// 	log.Fatalf("Error creating prepared statement: %s", err)
-	// }
-	// defer stmt.Close()
 
 	query := "SELECT * FROM Airports WHERE IATA_Code = ?"
 	err := db.DB.QueryRow(query, IATA_Code).Scan(&IATA_Code, &comment)
@@ -89,12 +72,6 @@ func isIATAInAirports(IATA_Code string) bool {
 
 // Check to see if a give role name is in roles
 func isRoleInRoles(roleName string) bool {
-	// stmt, err := db.DB.Prepare("SELECT * FROM Roles WHERE Role_Name = ?")
-	// if err != nil {
-	// 	log.Fatalf("Error creating prepared statement: %s", err)
-	// }
-	// defer stmt.Close()
-
 	var roleMessage string
 
 	query := "SELECT * FROM Roles WHERE Role_Name = ?"
@@ -110,12 +87,6 @@ func isRoleInRoles(roleName string) bool {
 
 // Check to see if given phone number is already flying at the given airport
 func isMemberAlreadyFlyingAtAirport(phone string, iata string) bool {
-	// stmt, err := db.DB.Prepare("SELECT * FROM Flies WHERE Phone_Number = ? AND IATA_Code = ?")
-	// if err != nil {
-	// 	log.Fatalf("Error creating prepared statement: %s", err)
-	// }
-	// defer stmt.Close()
-
 	query := "SELECT * FROM Flies WHERE Phone_Number = ? AND IATA_Code = ?"
 	err := db.DB.QueryRow(query, phone, iata).Scan(&phone, &iata)
 	if err != nil {
@@ -129,12 +100,6 @@ func isMemberAlreadyFlyingAtAirport(phone string, iata string) bool {
 
 // Check to see if given phone number is already wanting the given role
 func isMemberAlreadyWantingRole(phone string, role string) bool {
-	// stmt, err := db.DB.Prepare("SELECT * FROM Wants WHERE Phone_Number = ? AND Role_Name = ?")
-	// if err != nil {
-	// 	log.Fatalf("Error creating prepared statement: %s", err)
-	// }
-	// defer stmt.Close()
-
 	query := "SELECT * FROM Wants WHERE Phone_Number = ? AND Role_Name = ?"
 	err := db.DB.QueryRow(query, phone, role).Scan(&phone, &role)
 	if err != nil {
@@ -149,11 +114,6 @@ func isMemberAlreadyWantingRole(phone string, role string) bool {
 // Get the name of a member based on their phone number and return it
 func getNameOfMember(phone string) string {
 	var name string
-	// stmt, err := db.DB.Prepare("Select name FROM Members WHERE Phone_Number = ?")
-	// if err != nil {
-	// 	log.Fatalf("Error creating prepared statement: %s", err)
-	// }
-	// defer stmt.Close()
 
 	query := "Select name FROM Members WHERE Phone_Number = ?"
 	err := db.DB.QueryRow(query, phone).Scan(&name)

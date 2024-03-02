@@ -16,12 +16,6 @@ func addToFlies(IATA_Code string, phoneNumber string) error {
 		return fmt.Errorf("You are already flying at %s", IATA_Code)
 	}
 
-	// stmt, err := db.DB.Prepare("INSERT INTO Flies (Phone_Number, IATA_Code) VALUES (?, ?)")
-	// if err != nil {
-	// 	log.Fatalf("Error creating prepared statement: %s", err)
-	// }
-	// defer stmt.Close()
-
 	query := "INSERT INTO Flies (Phone_Number, IATA_Code) VALUES (?, ?)"
 	_, err := db.DB.Exec(query, phoneNumber, IATA_Code)
 	if err != nil {
@@ -39,12 +33,6 @@ func addToWants(roleName string, phoneNumber string) error {
 		return fmt.Errorf("You are already registered as a %s", roleName)
 	}
 
-	// stmt, err := db.DB.Prepare("INSERT INTO Wants (phone_number, Role_Name) VALUES (?, ?)")
-	// if err != nil {
-	// 	log.Fatalf("Error creating prepared statement: %s", err)
-	// }
-	// defer stmt.Close()
-
 	query := "INSERT INTO Wants (phone_number, Role_Name) VALUES (?, ?)"
 	_, err := db.DB.Exec(query, phoneNumber, roleName)
 	if err != nil {
@@ -61,11 +49,6 @@ func removeUserAtIATAFromFlies(phone string, iata string) error {
 	if !isMemberAlreadyFlyingAtAirport(phone, iata) {
 		return fmt.Errorf("You were not flying at %s", iata)
 	}
-	// stmt, err := db.DB.Prepare("DELETE FROM Flies WHERE Phone_Number = ? AND IATA_Code = ?")
-	// if err != nil {
-	// 	log.Fatalf("Error creating prepared statement: %s", err)
-	// }
-	// defer stmt.Close()
 
 	query := "DELETE FROM Flies WHERE Phone_Number = ? AND IATA_Code = ?"
 	deleteResult, err := db.DB.Exec(query, phone, iata)
@@ -89,11 +72,6 @@ func removeUserAtRoleFromWants(phone string, role string) error {
 	if !isMemberAlreadyWantingRole(phone, role) {
 		return fmt.Errorf("You were not %s", role)
 	}
-	// stmt, err := db.DB.Prepare("DELETE FROM Wants WHERE Phone_Number = ? AND Role_Name = ?")
-	// if err != nil {
-	// 	log.Fatalf("Error creating prepared statement: %s", err)
-	// }
-	// defer stmt.Close()
 
 	query := "DELETE FROM Wants WHERE Phone_Number = ? AND Role_Name = ?"
 	deleteResult, err := db.DB.Exec(query, phone, role)
@@ -111,12 +89,6 @@ func removeUserAtRoleFromWants(phone string, role string) error {
 
 // Update the notify field for a user
 func updateNotify(phone string, notify int) error {
-	// stmt, err := db.DB.Prepare("UPDATE Members SET Notify = ? WHERE Phone_Number = ?")
-	// if err != nil {
-	// 	log.Fatalf("Error creating prepared statement: %s", err)
-	// }
-	// defer stmt.Close()
-
 	query := "UPDATE Members SET Notify = ? WHERE Phone_Number = ?"
 	updateResult, err := db.DB.Exec(query, notify, phone)
 
@@ -134,12 +106,6 @@ func updateNotify(phone string, notify int) error {
 
 // Sets the name of the user to the given name
 func setNameOfMember(phone string, name string) {
-	// stmt, err := db.DB.Prepare("UPDATE Members SET name = ? WHERE Phone_Number = ?")
-	// if err != nil {
-	// 	log.Fatalf("Error creating prepared statement: %s", err)
-	// }
-	// defer stmt.Close()
-
 	query := "UPDATE Members SET name = ? WHERE Phone_Number = ?"
 	updateResult, err := db.DB.Exec(query, name, phone)
 
@@ -155,12 +121,6 @@ func setNameOfMember(phone string, name string) {
 
 // Sets a member to the given state of validity
 func setMemberValidity(isValid int, phone string) {
-	// stmt, err := db.DB.Prepare("UPDATE Members SET isValid = ? WHERE Phone_Number = ?")
-	// if err != nil {
-	// 	log.Fatalf("Error creating prepared statement: %s", err)
-	// }
-	// defer stmt.Close()
-
 	query := "UPDATE Members SET isValid = ? WHERE Phone_Number = ?"
 	updateResult, err := db.DB.Exec(query, isValid, phone)
 
@@ -177,12 +137,6 @@ func setMemberValidity(isValid int, phone string) {
 
 // Takes a user's airports and formats them into a response text
 func getEntriesFromFlies(phone string) string {
-	// stmt, err := db.DB.Prepare("SELECT IATA_Code FROM Flies WHERE Phone_Number = ?")
-	// if err != nil {
-	// 	log.Fatalf("Error creating prepared statement: %s", err)
-	// }
-	// defer stmt.Close()
-
 	query := "SELECT IATA_Code FROM Flies WHERE Phone_Number = ?"
 	selectResult, err := db.DB.Query(query, phone)
 
@@ -213,12 +167,6 @@ func getEntriesFromFlies(phone string) string {
 
 // Takes a user's roles and formats them into a response text
 func getEntriesFromWants(phone string) string {
-	// stmt, err := db.DB.Prepare("SELECT Role_Name FROM Wants WHERE Phone_Number = ?")
-	// if err != nil {
-	// 	log.Fatalf("Error creating prepared statement: %s", err)
-	// }
-	// defer stmt.Close()
-
 	query := "SELECT Role_Name FROM Wants WHERE Phone_Number = ?"
 	selectResult, err := db.DB.Query(query, phone)
 
@@ -250,12 +198,6 @@ func getEntriesFromWants(phone string) string {
 
 // Takes all airports and formats them into a response text
 func getAllAirports() string {
-	// stmt, err := db.DB.Prepare("SELECT * FROM Airports")
-	// if err != nil {
-	// 	log.Fatalf("Error creating prepared statement: %s", err)
-	// }
-	// defer stmt.Close()
-
 	selectResult, err := db.DB.Query("SELECT * FROM Airports")
 
 	if err != nil {
@@ -287,12 +229,6 @@ func getAllAirports() string {
 
 // Takes all roles and formats them into a response text
 func getAllRoles() string {
-	// stmt, err := db.DB.Prepare("SELECT * FROM Roles")
-	// if err != nil {
-	// 	log.Fatalf("Error creating prepared statement: %s", err)
-	// }
-	// defer stmt.Close()
-
 	selectResult, err := db.DB.Query("SELECT * FROM Roles")
 
 	if err != nil {

@@ -15,12 +15,6 @@ func cleanupDB(phone string, timestamp int64) bool {
 	clearOldRequests(fiveMinutesAgo)
 	clearOldDeferred(fiveMinutesAgo)
 
-	// stmt, err := db.DB.Prepare("SELECT * FROM Contacts WHERE timestamp < ?")
-	// if err != nil {
-	// 	log.Fatalf("Error creating prepared statement: %s", err)
-	// }
-	// defer stmt.Close()
-
 	query := "SELECT * FROM Contacts WHERE timestamp < ?"
 	selectResult, err := db.DB.Query(query, fiveMinutesAgo)
 
@@ -64,12 +58,6 @@ func cleanupDB(phone string, timestamp int64) bool {
 
 // Only clears invalid members
 func clearOldInvites(cutoff int64) {
-	// stmt, err := db.DB.Prepare("DELETE FROM Members WHERE timestamp < ? AND is_valid = 0")
-	// if err != nil {
-	// 	log.Fatalf("Error creating prepared statement: %s", err)
-	// }
-	// defer stmt.Close()
-
 	query := "DELETE FROM Members WHERE timestamp < ? AND is_valid = 0"
 	_, err := db.DB.Exec(query, cutoff)
 	if err != nil {
@@ -78,12 +66,6 @@ func clearOldInvites(cutoff int64) {
 }
 
 func clearOldDeferred(cutoff int64) {
-	// stmt, err := db.DB.Prepare("DELETE FROM Deferred WHERE timestamp < ?")
-	// if err != nil {
-	// 	log.Fatalf("Error creating prepared statement: %s", err)
-	// }
-	// defer stmt.Close()
-
 	query := "DELETE FROM Deferred WHERE timestamp < ?"
 	_, err := db.DB.Exec(query, cutoff)
 	if err != nil {
@@ -92,12 +74,6 @@ func clearOldDeferred(cutoff int64) {
 }
 
 func clearOldRequests(cutoff int64) {
-	// stmt, err := db.DB.Prepare("DELETE FROM Requester WHERE timestamp < ?")
-	// if err != nil {
-	// 	log.Fatalf("Error creating prepared statement: %s", err)
-	// }
-	// defer stmt.Close()
-
 	query := "DELETE FROM Requester WHERE timestamp < ?"
 	_, err := db.DB.Exec(query, cutoff)
 	if err != nil {
@@ -107,18 +83,11 @@ func clearOldRequests(cutoff int64) {
 
 // When a user's request is timed out, notify them
 func notifyRequestersOfTimedOutRequest(cutoff int64) {
-	// stmt, err := db.DB.Prepare("SELECT * FROM Requester WHERE timestamp < ?")
-	// if err != nil {
-	// 	log.Fatalf("Error creating prepared statement: %s", err)
-	// }
-	// defer stmt.Close()
-
 	query := "SELECT * FROM Requester WHERE timestamp < ?"
 	toNotify, err := db.DB.Query(query, cutoff)
 
 	if err != nil {
 		toNotify = retryQuery(query, cutoff)
-		// log.Fatalf("Impossible select from Requester: %s", err)
 	}
 
 	defer toNotify.Close()
